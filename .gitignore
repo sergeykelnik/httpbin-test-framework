@@ -16,6 +16,9 @@ env/
 .idea/
 .vscode/
 
+# Reports
+allure-results/
+
 # Distribution / packaging
 dist/
 build/

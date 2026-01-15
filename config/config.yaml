@@ -1,0 +1,11 @@
+api:
+  base_url: "https://httpbin.org"
+  timeout: 30
+
+retry:
+  max_attempts: 2
+  delay: 1
+  
+test_data:
+  locale: "en_US"
+  seed:

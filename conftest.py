@@ -1,10 +1,6 @@
 import pytest
 import requests
-import json
-import logging
 from utils.config_loader import config
-
-logger = logging.getLogger(__name__)
 
 @pytest.fixture()
 def api_client():
