@@ -1,19 +1,26 @@
 import pytest
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from utils.config_loader import config
 
 @pytest.fixture()
 def api_client():
-    """Create API client with retry logic"""
+    """Create API client with retry logic and Brotli support"""
     class APIClient:
         def __init__(self):
             self.base_url = config.base_url
             self.timeout = config.timeout
+            self.session = requests.Session()
+            # Set Accept-Encoding header to include br (Brotli)
+            self.session.headers.update({
+                'Accept-Encoding': 'gzip, deflate, br'
+            })
 
         def request(self, method, endpoint, **kwargs):
             url = f"{self.base_url}{endpoint}"
             kwargs.setdefault('timeout', self.timeout)
-            return requests.request(method, url, **kwargs)
+            return self.session.request(method, url, **kwargs)
 
         def get(self, endpoint, **kwargs):
             response = self.request('GET', endpoint, **kwargs)
@@ -35,4 +42,9 @@ def api_client():
             response = self.request('PATCH', endpoint, **kwargs)
             return response
 
-    return APIClient()
+        def close(self):
+            self.session.close()
+
+    client = APIClient()
+    yield client
+    client.close()
