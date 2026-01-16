@@ -13,11 +13,10 @@ services:
 
   allure:
     image: frankescobar/allure-docker-service:latest
+    pull_policy: always
+    restart: no
     ports:
       - "5050:5050"
     volumes:
       - ./allure-results:/app/allure-results
       - ./allure-reports:/app/default-reports
-    depends_on:
-      pytest:
-        condition: service_completed_successfully

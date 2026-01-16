@@ -4,18 +4,14 @@
 
 For local development (using current directory):
 ```bash
-docker-compose up --build
+# Run tests
+docker-compose run --rm pytest
+
+# Then start Allure service to view results
+docker-compose up allure
 ```
 
-Tests run automatically (entrypoint runs pytest and always exits 0 so Allure starts even if tests fail).
 View Allure report at: http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html
-
-To build from GitHub repository:
-```bash
-git clone https://github.com/sergeykelnik/httpbin-test-framework.git
-cd httpbin-test-framework
-docker-compose up --build
-```
 
 ## Run Tests
 ```bash

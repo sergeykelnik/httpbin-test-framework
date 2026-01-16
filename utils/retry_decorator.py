@@ -2,6 +2,7 @@ import time
 import functools
 import logging
 import requests
+import allure
 from .config_loader import config
 
 logger = logging.getLogger(__name__)
@@ -37,13 +38,17 @@ def retry(
                 log_http(response)
                 return response
 
+            last_exception = None
             for attempt in range(1, times + 1):
                 try:
                     logger.info(f"Attempt {attempt}/{times} for {func.__name__}")
-                    requests.Session.request = logged_request
-                    return func(*args, **kwargs)
+                    
+                    with allure.step(f"Attempt {attempt}/{times}"):
+                        requests.Session.request = logged_request
+                        return func(*args, **kwargs)
                 
                 except exceptions as e:
+                    last_exception = e
                     logger.warning(
                         f"Exception on attempt {attempt}/{times}: {e}"
                     )
