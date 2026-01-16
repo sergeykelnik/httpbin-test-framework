@@ -7,7 +7,8 @@ For local development (using current directory):
 docker-compose up --build
 ```
 
-Tests run automatically. View Allure report at: http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html
+Tests run automatically (entrypoint runs pytest and always exits 0 so Allure starts even if tests fail).
+View Allure report at: http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html
 
 To build from GitHub repository:
 ```bash

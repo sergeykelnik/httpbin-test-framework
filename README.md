@@ -16,8 +16,10 @@ pytest --alluredir=allure-results
 
 ## Docker
 ```bash
-docker-compose up
+docker-compose up --build
 ```
+
+The pytest service runs tests on start and always exits 0 so the Allure service comes up even if tests fail. View reports at http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html once containers are up.
 
 See [DOCKER.md](DOCKER.md) for details.
 
