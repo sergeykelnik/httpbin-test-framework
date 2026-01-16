@@ -1,0 +1,18 @@
+services:
+  pytest:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - BASE_URL=https://httpbin.org
+      - PYTEST_ARGS=${PYTEST_ARGS:--v --tb=short}
+    volumes:
+      - ./allure-results:/app/allure-results
+
+  allure:
+    image: frankescobar/allure-docker-service:latest
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./allure-reports:/app/default-reports

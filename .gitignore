@@ -18,6 +18,7 @@ env/
 
 # Reports
 allure-results/
+allure-reports/
 
 # Distribution / packaging
 dist/
