@@ -6,7 +6,7 @@ def test_headers_returns_request_headers(api_client):
     """Test GET /headers returns incoming request headers"""
     response = api_client.get("/headers")
 
-    assert response.status_code == 1200
+    assert response.status_code == 200
     data = response.json()
 
     assert "headers" in data
