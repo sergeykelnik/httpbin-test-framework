@@ -7,6 +7,7 @@ from .config_loader import config
 
 logger = logging.getLogger(__name__)
 
+
 def log_http(response, level=logging.INFO):
     if response is None:
         return
@@ -22,10 +23,11 @@ def log_http(response, level=logging.INFO):
     logger.log(level, f"Headers: {dict(response.headers)}")
     logger.log(level, f"Body: {response.text}")
 
+
 def retry(
-    times=config.max_retry_attempts,
-    delay=config.retry_delay,
-    exceptions=(AssertionError, requests.RequestException),
+        times=config.max_retry_attempts,
+        delay=config.retry_delay,
+        exceptions=(AssertionError, requests.RequestException),
 ):
     def decorator(func):
         @functools.wraps(func)
@@ -38,17 +40,15 @@ def retry(
                 log_http(response)
                 return response
 
-            last_exception = None
             for attempt in range(1, times + 1):
                 try:
-                    logger.info(f"Attempt {attempt}/{times} for {func.__name__}")
-                    
+                    logger.info(f"Attempt {attempt}/{times} "
+                                f"for {func.__name__}")
                     with allure.step(f"Attempt {attempt}/{times}"):
                         requests.Session.request = logged_request
                         return func(*args, **kwargs)
-                
+
                 except exceptions as e:
-                    last_exception = e
                     logger.warning(
                         f"Exception on attempt {attempt}/{times}: {e}"
                     )
@@ -68,4 +68,5 @@ def retry(
                     requests.Session.request = original_request
 
         return wrapper
-    return decorator  
+
+    return decorator

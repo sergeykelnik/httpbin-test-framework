@@ -1,23 +1,25 @@
-import pytest
 import base64
 import json
 import time
-
-from utils.test_data_generator import test_data
 from uuid import UUID
 
+import pytest
+
 from utils.retry_decorator import retry
+from utils.test_data_generator import test_data
+
 
 @retry()
 def test_base64_decodes_value(api_client):
     """Test GET /base64/{value} decodes base64url-encoded string"""
     test_string = test_data.random_sentence(3)
     base64_str = base64.b64encode(
-    bytes(test_string, 'utf-8')).decode('utf-8')
+        bytes(test_string, 'utf-8')).decode('utf-8')
     response = api_client.get(f"/base64/{base64_str}")
 
     assert response.status_code == 200
     assert test_string in response.text
+
 
 @retry()
 def test_bytes_returns_n_random_bytes(api_client):
@@ -27,6 +29,7 @@ def test_bytes_returns_n_random_bytes(api_client):
 
     assert response.status_code == 200
     assert len(response.content) == bytes
+
 
 @retry()
 @pytest.mark.parametrize("method", ["GET", "DELETE", "PATCH", "POST", "PUT"])
@@ -41,6 +44,7 @@ def test_delay_returns_delayed_response(api_client, method):
     assert elapsed_time >= delay
     assert elapsed_time < delay + 2
 
+
 @retry()
 def test_drip_returns_dripped_data(api_client):
     """Test GET /drip returns data over duration"""
@@ -51,7 +55,7 @@ def test_drip_returns_dripped_data(api_client):
     delay = test_data.random_integer(1, 5)
 
     start_time = time.time()
-    response = api_client.get(f"/drip", params={
+    response = api_client.get("/drip", params={
         "duration": duration,
         "numbytes": numbytes,
         "code": code,
@@ -63,6 +67,7 @@ def test_drip_returns_dripped_data(api_client):
     assert len(response.content) == numbytes
     # Should take at least delay + duration = 4 seconds
     assert elapsed >= delay + duration
+
 
 @retry()
 def test_links_generates_page_with_links(api_client):
@@ -76,6 +81,7 @@ def test_links_generates_page_with_links(api_client):
 
     assert f"<a href='/links/{pages}" in response.text
 
+
 @retry()
 def test_range_streams_numbytes(api_client):
     """Test GET /range/{numbytes} streams n random bytes"""
@@ -85,8 +91,9 @@ def test_range_streams_numbytes(api_client):
     assert len(response.content) == numbytes
     assert response.headers.get("Content-Length") == str(numbytes)
     assert response.headers.get(
-       "Content-Range") == f"bytes 0-{numbytes - 1}/{numbytes}"
+        "Content-Range") == f"bytes 0-{numbytes - 1}/{numbytes}"
     assert response.headers.get("Accept-Ranges") == "bytes"
+
 
 @retry()
 def test_stream_bytes_returns_n_bytes(api_client):
@@ -102,6 +109,7 @@ def test_stream_bytes_returns_n_bytes(api_client):
     total_bytes = b''.join(chunks)
     assert len(total_bytes) == numbytes
     assert len(response.content) == numbytes
+
 
 @retry()
 def test_stream_returns_n_json_responses(api_client):
@@ -120,10 +128,11 @@ def test_stream_returns_n_json_responses(api_client):
     # check ids are from 0 to response_number -1
     assert check_ids == set(range(response_number))
 
+
 @retry()
 def test_uuid_returns_valid_uuid4(api_client):
     """Test GET /uuid returns valid UUID4"""
-    response = api_client.get(f"/uuid")
+    response = api_client.get("/uuid")
 
     assert response.status_code == 200
     data = response.json()
@@ -133,11 +142,12 @@ def test_uuid_returns_valid_uuid4(api_client):
     uuid_obj = UUID(data["uuid"])
     assert uuid_obj.version == 4
 
+
 @retry()
 def test_uuid_generates_different_values(api_client):
     """Test GET /uuid generates different UUIDs on each call"""
-    response1 = api_client.get(f"/uuid")
-    response2 = api_client.get(f"/uuid")
+    response1 = api_client.get("/uuid")
+    response2 = api_client.get("/uuid")
 
     uuid1 = response1.json()["uuid"]
     uuid2 = response2.json()["uuid"]

@@ -1,12 +1,13 @@
 import pytest
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+
 from utils.config_loader import config
+
 
 @pytest.fixture()
 def api_client():
     """Create API client with retry logic and Brotli support"""
+
     class APIClient:
         def __init__(self):
             self.base_url = config.base_url
